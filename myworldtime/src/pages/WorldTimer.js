@@ -34,11 +34,15 @@ const WorldTimer = ({locations}) => {
                 <Button type='submit'>
 
                     
-                <Link to="/display-time" state={{ item:optionValue }}>Check Time</Link>
+                <Link className='homelink' to="/display-time" state={{ item:optionValue }}>Check Time</Link>
                 </Button>
                 </Form>
-            </SelectHolder>
 
+           
+            </SelectHolder>
+                <ButtonHomeHolder>
+                    <ButtonHome><HomeLink className="linkhome" to='/'>Home</HomeLink></ButtonHome>
+                </ButtonHomeHolder>
     </Container>
   )
 }
@@ -114,5 +118,51 @@ const Button = styled.button`
 
 
     }
+
+    .homelink{
+        text-decoration:none;
+    }
+`;
+
+
+const ButtonHomeHolder = styled.div`
+        margin-top:2em;
+        cursor:pointer;
+`;
+
+const ButtonHome = styled.button`
+padding:1em 3em 1em 3em;
+border-radius:5px;
+border: 2px solid #0000ff;
+
+    &:hover{
+        background-color:#0000ff;
+        cursor:pointer;
+        background-color:rgba(0,0,255,0.5);
+        border: 2px solid rgba(0,0,255,0.5);
+
+    }
+
+    &:hover > .linkhome{
+
+        color:white;
+     
+
+
+      
+      }
+
+      .
+    
+`;
+
+const HomeLink = styled(Link)`
+    text-decoration:none;
+    font-weight:600;
+    font-size:1.2em;
+    color:#0000ff;
+
+
+
 `;
 export default WorldTimer
