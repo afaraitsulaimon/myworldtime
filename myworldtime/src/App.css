@@ -11,5 +11,10 @@
     background-size: cover;
     background-repeat: no-repeat;
   
-  
   }
+
+ @media (max-width: 912px) and (min-width: 360px) {
+  .root{
+    overflow: hidden;
+  }
+ }

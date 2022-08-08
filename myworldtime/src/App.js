@@ -12,7 +12,7 @@ function App() {
 
         const fetchAllLocation = async ()  => {
         
-            const url = "http://worldtimeapi.org/api/timezone";
+            const url = "https://worldtimeapi.org/api/timezone";
             const res = await fetch(url);
             const data = await res.json();
 
