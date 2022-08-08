@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import {Link, useLocation} from "react-router-dom";
 import styled from 'styled-components';
 import moment from 'moment'
@@ -6,25 +6,71 @@ import tz from 'moment-timezone'
 import '../App.css'
 
 
+//the initial value of all our state is stored here inside the initialState
+
+const initialState = {
+  timeForLocation : {},
+  time : "",
+  date :  "",
+  hrs : "",
+  day : "",
+}
+
+
+//we used the reducer function here
+// which takes 2 parameter, the state and the action performed
+// the condition we are checking for is the action.type
+// if the action.type is getTheTime
+// then it will return to update the state , like this 
+// ...state,
+// timeForLocation : action.payload.data,  -- the timeForLocation is the name we gave a state, then we set a value for it 
+// as action.payload.data ... the payload and the data is gotten from where we wrote the dispatch
+// time: action.payload.theTime,
+// date :  action.payload.theDate,
+// hrs : action.payload.theHrs,
+// day : action.payload.theDays,
+
+const reducer = (state, action) => {
+
+    switch(action.type){
+      case "getTheTime":
+
+        return {
+          ...state,
+          timeForLocation : action.payload.data,
+          time: action.payload.theTime,
+          date :  action.payload.theDate,
+          hrs : action.payload.theHrs,
+          day : action.payload.theDays,
+        }
+      default:
+        return state;
+
+    }
+}
+
 const DisplayTime = () => {
 
 const location = useLocation();
 
+const [state, dispatch] = useReducer(reducer, initialState);
 
-const [timeForLocation, setTimeForLocation] = useState({});
 
-const [time, setTime] = useState();
+// const [timeForLocation, setTimeForLocation] = useState({});
 
-const [date, setDate] = useState();
+// const [time, setTime] = useState();
 
-const [hrs, setHrs] = useState();
+// const [date, setDate] = useState();
 
-const [day, setDay] = useState();
+// const [hrs, setHrs] = useState();
+
+// const [day, setDay] = useState();
 
 
 
 
         const fetchTimeForTheLocation = async() => {
+
 
             const url = `https://worldtimeapi.org/api/timezone/${location.state.item}`;
 
@@ -33,20 +79,24 @@ const [day, setDay] = useState();
 
             const data = await res.json();
 
+            //use the dispatch of the use Reducer to set the type , type : 'getTheTime', 
+            //which will be used in the switch case of the reducer
+            //Then the payload to hold the multiple values of the state we want to update
+            // we can now update it in our reducer function at the top
+
+            dispatch({type : 'getTheTime', payload: { data: data, theTime: moment(data.datetime).tz(location.state.item).format('HH:mm a'), theDate: moment(data.datetime).tz(location.state.item).format('LL'), theHrs: moment(data.datetime).tz(location.state.item).format('HH'), theDays:moment(data.datetime).tz(location.state.item).format('dddd')}})
+
       
-            setTimeForLocation(data);
+            // setTimeForLocation(data);
 
-            setTime(moment(timeForLocation.datetime).tz(location.state.item).format('HH:mm a'))
-            setDate(moment(timeForLocation.datetime).tz(location.state.item).format('LL'))
+            // setTime(moment(timeForLocation.datetime).tz(location.state.item).format('HH:mm a'))
+            // setDate(moment(timeForLocation.datetime).tz(location.state.item).format('LL'))
 
-            setHrs(moment(timeForLocation.datetime).tz(location.state.item).format('HH'))
+            // setHrs(moment(timeForLocation.datetime).tz(location.state.item).format('HH'))
 
-            // setDay(moment(timeForLocation.datetime).weekday(timeForLocation.day_of_week).format('dddd'))
+         
 
-
-            // setDay(moment().weekday(timeForLocation.day_of_week).format('dddd'));
-
-            setDay(moment(timeForLocation.datetime).tz(location.state.item).format('dddd'))
+            // setDay(moment(timeForLocation.datetime).tz(location.state.item).format('dddd'))
 
         
 
@@ -59,14 +109,15 @@ const [day, setDay] = useState();
             
   return (
 
-    <Container className={hrs < 16 ? 'back1' : 'back2'}>
+    // then we use state.hrs or state. any value we have stored in the initial state to display it
+    <Container className={state.hrs < 16 ? 'back1' : 'back2'}>
 
     <Header><p>Time For: {location.state.item}</p></Header>
     <TimeInformation>
 
-                <p><span>Date</span> {date}</p>
-                <p><span>Time</span> {time}</p>
-                <p><span>Day</span> {day}</p>
+                <p><span>Date</span> {state.date}</p>
+                <p><span>Time</span> {state.time}</p>
+                <p><span>Day</span> {state.day}</p>
 
         
 
@@ -127,7 +178,7 @@ p{
   color:#0c499b;
   font-weight:500;
   font-family: 'Mouse Memoirs', sans-serif;
-  font-size:1.2em;
+  font-size:0.9em;
 
 
   span{
